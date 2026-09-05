@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LetsTestTools — We Build Testing Tools. We Test Tools.</title>
+  <meta name="description" content="Tools for testing. Built by testing the tools. Property-based fuzzing, automated shrinking, and persistent regression databases for Dart & Flutter. Verified pub.dev publisher.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="LetsTestTools — Tools for testing. Built by testing the tools.">
+  <meta property="og:description" content="Testing as an adjective. Testing as a verb. High-throughput property fuzzing and stateful model verification for Dart & Flutter.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://letstesttools.dev">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon (SVG Industrial Test Crosshair) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307090e'/><circle cx='50' cy='50' r='36' stroke='%2338bdf8' stroke-width='6' fill='none'/><circle cx='50' cy='50' r='20' stroke='%23f59e0b' stroke-width='6' fill='none'/><circle cx='50' cy='50' r='6' fill='%2310b981'/><line x1='50' y1='6' x2='50' y2='22' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='50' y1='78' x2='50' y2='94' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='6' y1='50' x2='22' y2='50' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='78' y1='50' x2='94' y2='50' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/></svg>">
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top System Announcement Bar -->
+  <aside class="announcement-bar">
+    <div class="container announcement-content">
+      <span class="badge-status-dot"></span>
+      <span class="announcement-text">
+        <strong>Release Announcement:</strong> <code>hegeltest 0.8.0</code> & <code>hegeltest_flutter 0.7.0</code> are live on pub.dev with persistent counterexample databases!
+      </span>
+      <a href="#packages" class="announcement-link">Explore Release &rarr;</a>
+    </div>
+  </aside>
+
+  <!-- Site Navigation -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" aria-label="LetsTestTools Home">
+        <svg class="brand-icon" viewBox="0 0 32 32" width="24" height="24" fill="none">
+          <rect width="32" height="32" rx="8" fill="#131822" stroke="#243044" stroke-width="1.5"/>
+          <path d="M7 16L13 22L25 10" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="3" fill="#f59e0b"/>
+        </svg>
+        <span class="brand-name">LetsTestTools<span class="domain-tld">.dev</span></span>
+      </a>
+
+      <nav class="nav-menu" id="nav-menu">
+        <a href="#manifesto" class="nav-link">Our Philosophy</a>
+        <a href="#packages" class="nav-link">Packages</a>
+        <a href="#simulator" class="nav-link">Live Fuzzing</a>
+        <a href="#code-walkthrough" class="nav-link">Code Examples</a>
+        <a href="#architecture" class="nav-link">Architecture</a>
+        <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener" class="nav-link nav-link-badge">
+          <span class="shield-icon">🛡️</span> pub.dev Verified
+        </a>
+        <a href="https://github.com/LetsTestTools" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+          <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-layout">
+        <div class="hero-text">
+          <div class="publisher-tag">
+            <span class="tag-status"></span>
+            <span>pub.dev Verified Publisher</span>
+            <span class="tag-separator">/</span>
+            <code>letstesttools.dev</code>
+          </div>
+
+          <h1 class="hero-headline">
+            Tools for testing.<br>
+            <span class="headline-highlight">Built by testing the tools.</span>
+          </h1>
+
+          <p class="hero-sublead">
+            <span class="grammar-pill">testing <em class="text-amber">as an adjective</em></span>
+            <span class="grammar-pill">testing <em class="text-emerald">as a verb</em></span>
+          </p>
+
+          <p class="hero-lead">
+            We engineer high-performance property testing frameworks, and we torture-test developer tools to their breaking point. Automated counterexample shrinking, persistent regression databases, and widget sweeps for Dart and Flutter.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#packages" class="btn btn-primary">Explore Packages</a>
+            <a href="#manifesto" class="btn btn-secondary">Read The Manifesto</a>
+          </div>
+
+          <!-- Quick Install Switcher -->
+          <div class="quick-install-box">
+            <div class="quick-install-tabs">
+              <button class="install-tab active" data-target="dart-cmd">Dart CLI</button>
+              <button class="install-tab" data-target="flutter-cmd">Flutter CLI</button>
+            </div>
+            <div class="quick-install-cmd">
+              <span class="prompt-symbol">$</span>
+              <code id="install-code-snippet">dart pub add dev:hegeltest</code>
+              <button class="btn-copy-mini" id="copy-install-btn" title="Copy to clipboard" aria-label="Copy install command">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Telemetry Card -->
+        <div class="hero-telemetry">
+          <div class="telemetry-panel">
+            <div class="telemetry-header">
+              <span class="telemetry-title">LETSTESTTOOLS RUNTIME METRICS</span>
+              <span class="telemetry-status">STABLE</span>
+            </div>
+            <div class="telemetry-grid">
+              <div class="telemetry-item">
+                <span class="metric-label">pub.dev Score</span>
+                <span class="metric-value text-emerald">160 / 160</span>
+                <span class="metric-sub">Across all published packages</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="metric-label">Regression Replay</span>
+                <span class="metric-value text-amber">Iteration 1</span>
+                <span class="metric-sub">Zero search time via .hegel/</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="metric-label">Native Core</span>
+                <span class="metric-value text-sky">libhegel (Rust)</span>
+                <span class="metric-sub">Prebuilt via Dart Native Assets</span>
+              </div>
+              <div class="telemetry-item">
+                <span class="metric-label">CI Multi-Arch</span>
+                <span class="metric-value text-light">macOS · Linux · Win</span>
+                <span class="metric-sub">arm64 &amp; x86_64 matrix verified</span>
+              </div>
+            </div>
+            <div class="telemetry-footer-banner">
+              <span class="tech-tag">Zero C/Rust toolchains required</span>
+              <span class="tech-tag">MIT Licensed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Manifesto: The Double Meaning -->
+    <section id="manifesto" class="section-manifesto">
+      <div class="container">
+        <div class="manifesto-card">
+          <div class="manifesto-header">
+            <div class="section-eyebrow">// OUR MISSION</div>
+            <h2 class="manifesto-title">The Dual Nature of LetsTestTools</h2>
+          </div>
+          
+          <div class="manifesto-grid">
+            <div class="manifesto-col">
+              <div class="manifesto-icon-box text-amber">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <div class="grammar-title">
+                <span class="grammar-role">Adjective</span>
+                <h3>Testing Tools</h3>
+              </div>
+              <p>
+                We build industrial-grade developer software specifically designed for automated quality assurance. Property-based fuzzers, coverage-guided mutation engines, AST-aware shrinking algorithms, and stateful model checkers that relieve engineers from having to guess edge cases by hand.
+              </p>
+              <div class="manifesto-pill">What we produce: <code>hegeltest</code>, <code>hegeltest_flutter</code></div>
+            </div>
+
+            <div class="manifesto-divider"></div>
+
+            <div class="manifesto-col">
+              <div class="manifesto-icon-box text-emerald">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+              </div>
+              <div class="grammar-title">
+                <span class="grammar-role">Verb + Object</span>
+                <h3>Testing Tools</h3>
+              </div>
+              <p>
+                We test the developer tools themselves. Compilers, serialization pipelines, state management stores, widget layout engines, and FFI bridges are complex pieces of software prone to subtle regressions. We subject these tools to millions of chaotic adversarial inputs to verify they hold under pressure.
+              </p>
+              <div class="manifesto-pill">How we engineer: Zero-flakiness, formal invariants, stress CI</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Fuzzing & Shrinking Simulator -->
+    <section id="simulator" class="section-simulator">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// TACTILE DEMONSTRATION</div>
+          <h2 class="section-title">Experience Property Fuzzing &amp; Shrinking</h2>
+          <p class="section-desc">
+            Watch the engine generate pseudorandom inputs, catch an unexpected assertion violation, mathematically shrink it to the single smallest counterexample, and persist it to disk.
+          </p>
+        </div>
+
+        <div class="simulator-card">
+          <div class="simulator-toolbar">
+            <div class="terminal-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-title">hegel_runner --property="queue_invariants"</div>
+            <div class="simulator-controls">
+              <button class="btn btn-sm btn-amber" id="run-sim-btn">▶ Run Property Fuzz</button>
+              <button class="btn btn-sm btn-outline" id="reset-sim-btn">↺ Reset</button>
+            </div>
+          </div>
+
+          <div class="simulator-body" id="simulator-console">
+            <div class="log-line text-muted">// Property under test: forall (List&lt;int&gt; xs) => xs.sum &gt;= 0</div>
+            <div class="log-line text-muted">// Ready to start. Click "Run Property Fuzz" to initiate the engine.</div>
+          </div>
+
+          <div class="simulator-footer">
+            <div class="sim-stat">
+              <span class="sim-stat-label">ENGINE PHASE:</span>
+              <span class="sim-stat-value" id="sim-status">IDLE</span>
+            </div>
+            <div class="sim-stat">
+              <span class="sim-stat-label">EXECUTED DRAWS:</span>
+              <span class="sim-stat-value" id="sim-cases">0 / 100</span>
+            </div>
+            <div class="sim-stat">
+              <span class="sim-stat-label">COUNTEREXAMPLE:</span>
+              <span class="sim-stat-value" id="sim-reduction">NONE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages" class="section-packages">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// VERIFIED REPOSITORIES</div>
+          <h2 class="section-title">Published Packages</h2>
+          <p class="section-desc">
+            Distributed under the verified publisher identity <strong>letstesttools.dev</strong> on pub.dev.
+          </p>
+        </div>
+
+        <div class="packages-grid">
+          <!-- Card 1: hegeltest -->
+          <article class="package-card">
+            <div class="pkg-header">
+              <div class="pkg-title-row">
+                <h3 class="pkg-name">hegeltest</h3>
+                <span class="pkg-version-pill">v0.8.0</span>
+              </div>
+              <p class="pkg-summary">
+                Core property-based testing and fuzzing engine for pure Dart. Features coverage-guided generation, automated binary shrinking, and persistent counterexample caching.
+              </p>
+            </div>
+
+            <div class="pkg-badges">
+              <span class="mini-badge badge-points">160/160 pub points</span>
+              <span class="mini-badge badge-license">MIT</span>
+              <span class="mini-badge badge-native">Dart Native Assets</span>
+            </div>
+
+            <ul class="pkg-feature-list">
+              <li><strong>Persistent Database</strong>: Auto-caches discovered failures to <code>.hegel/examples/</code> for instant regression verification on iteration 1.</li>
+              <li><strong>Zero Native Setup</strong>: Bundles precompiled <code>libhegel_c</code> binaries for macOS, Linux, and Windows; SHA-256 verified via <code>hook/build.dart</code>.</li>
+              <li><strong>Rich Generator Library</strong>: Primitives, text/regex, recursive collections, temporal dates, and IP networks.</li>
+              <li><strong>Distribution Observability</strong>: Track data dispersion and category frequencies with <code>tc.collect()</code>.</li>
+            </ul>
+
+            <div class="pkg-links">
+              <a href="https://pub.dev/packages/hegeltest" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+                View on pub.dev &rarr;
+              </a>
+              <a href="https://github.com/LetsTestTools/hegel-dart" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+                GitHub Repository
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 2: hegeltest_flutter -->
+          <article class="package-card package-card-highlight">
+            <div class="pkg-header">
+              <div class="pkg-title-row">
+                <h3 class="pkg-name">hegeltest_flutter</h3>
+                <span class="pkg-version-pill pill-flutter">v0.7.0</span>
+              </div>
+              <p class="pkg-summary">
+                First-class Flutter integration for property-based UI sweeps, state machine testing, and widget constraint stress-testing without <code>package:test</code> friction.
+              </p>
+            </div>
+
+            <div class="pkg-badges">
+              <span class="mini-badge badge-points">160/160 pub points</span>
+              <span class="mini-badge badge-license">MIT</span>
+              <span class="mini-badge badge-flutter">flutter_test Native</span>
+            </div>
+
+            <ul class="pkg-feature-list">
+              <li><strong><code>hegelFlutterWidgetTest</code></strong>: Run property fuzzing directly inside <code>testWidgets</code> to sweep layout paddings, text constraints, and screen sizes.</li>
+              <li><strong><code>hegelFlutterStatefulTest</code></strong>: Verify complex UI state machines and stateful business logic with automated rule sequencing and invariant checking.</li>
+              <li><strong>Persistent Database</strong>: Auto-derives <code>databaseKey</code> from widget test descriptions; instantly replays failing UI configurations.</li>
+              <li><strong><code>runHegelFlutterTest</code></strong>: Standalone test runner that returns a <code>RunResult</code> for custom harnesses, bots, and CI checks.</li>
+            </ul>
+
+            <div class="pkg-links">
+              <a href="https://pub.dev/packages/hegeltest_flutter" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+                View on pub.dev &rarr;
+              </a>
+              <a href="https://github.com/LetsTestTools/hegeltest_flutter" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+                GitHub Repository
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Matrix -->
+    <section class="section-matrix">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// PARADIGM COMPARISON</div>
+          <h2 class="section-title">Manual Example Testing vs Property Fuzzing</h2>
+          <p class="section-desc">
+            Why leading software systems rely on randomized property testing to unearth edge cases before deployment.
+          </p>
+        </div>
+
+        <div class="matrix-table-wrapper">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th class="col-dim">Dimension</th>
+                <th class="col-trad">Traditional Example Tests</th>
+                <th class="col-prop">LetsTestTools Property Testing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="dim-title">Input Diversity</td>
+                <td class="cell-trad">3–5 manual values (e.g. <code>0</code>, <code>1</code>, <code>"test"</code>)</td>
+                <td class="cell-prop">Thousands of mutated, coverage-guided inputs</td>
+              </tr>
+              <tr>
+                <td class="dim-title">Regression Feedback</td>
+                <td class="cell-trad">Copy/paste reproduction strings by hand</td>
+                <td class="cell-prop">Saved to <code>.hegel/</code> and replayed <strong>on iteration 1</strong></td>
+              </tr>
+              <tr>
+                <td class="dim-title">Debugging Burden</td>
+                <td class="cell-trad">Massive noisy inputs with hundreds of irrelevant fields</td>
+                <td class="cell-prop"><strong>Automated shrinking</strong> isolates the single minimal failure</td>
+              </tr>
+              <tr>
+                <td class="dim-title">Flutter Widgets</td>
+                <td class="cell-trad">Fixed static golden snapshots</td>
+                <td class="cell-prop">Sweep paddings, typography, and constraints across hundreds of passes</td>
+              </tr>
+              <tr>
+                <td class="dim-title">Execution Speed</td>
+                <td class="cell-trad">Interpreted Dart assertions</td>
+                <td class="cell-prop">High-throughput Rust fuzzing engine with zero FFI overhead</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Code Walkthrough -->
+    <section id="code-walkthrough" class="section-code">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// PRODUCTION CODE</div>
+          <h2 class="section-title">Clean, Idiomatic APIs</h2>
+          <p class="section-desc">
+            No convoluted DSLs or complex boilerplate. Just clean Dart functions that integrate seamlessly with your existing test runners.
+          </p>
+        </div>
+
+        <div class="code-editor-box">
+          <div class="editor-tabs">
+            <button class="editor-tab active" data-tab="tab-unit">Dart Property Test</button>
+            <button class="editor-tab" data-tab="tab-widget">Flutter Widget Sweep</button>
+            <button class="editor-tab" data-tab="tab-stateful">State Machine Invariants</button>
+            <button class="editor-tab" data-tab="tab-ci">CI &amp; Database Caching</button>
+          </div>
+
+          <div class="editor-content">
+            <!-- Tab 1: Dart Unit -->
+            <div class="tab-pane active" id="tab-unit">
+              <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:test/test.dart'</span>;
+<span class="k">import</span> <span class="s">'package:hegeltest/hegeltest.dart'</span>;
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="f">hegelTest</span>(<span class="s">'reverse is involutory'</span>, (tc) {
+    <span class="c">// Draw pseudo-random inputs with automatic shrinking</span>
+    <span class="k">final</span> xs = tc.<span class="f">draw</span>(<span class="f">lists</span>(<span class="f">integers</span>()), label: <span class="s">'xs'</span>);
+
+    <span class="c">// Track generator distribution</span>
+    tc.<span class="f">collect</span>(xs.isEmpty ? <span class="s">'empty'</span> : (xs.length &lt; <span class="n">10</span> ? <span class="s">'short'</span> : <span class="s">'long'</span>));
+
+    <span class="c">// Verify universal mathematical property</span>
+    <span class="f">expect</span>(xs.reversed.toList().reversed.toList(), <span class="f">equals</span>(xs));
+  });
+}</code></pre>
+            </div>
+
+            <!-- Tab 2: Flutter Widget -->
+            <div class="tab-pane" id="tab-widget">
+              <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:flutter/material.dart'</span>;
+<span class="k">import</span> <span class="s">'package:flutter_test/flutter_test.dart'</span>;
+<span class="k">import</span> <span class="s">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="f">hegelFlutterWidgetTest</span>(<span class="s">'card layout never overflows under dynamic padding'</span>, (tc, tester) <span class="k">async</span> {
+    <span class="k">final</span> paddingHorizontal = tc.<span class="f">draw</span>(<span class="f">integers</span>(min: <span class="n">0</span>, max: <span class="n">96</span>)).toDouble();
+    <span class="k">final</span> paddingVertical = tc.<span class="f">draw</span>(<span class="f">integers</span>(min: <span class="n">0</span>, max: <span class="n">48</span>)).toDouble();
+    <span class="k">final</span> label = tc.<span class="f">draw</span>(<span class="f">text</span>(minSize: <span class="n">1</span>, maxSize: <span class="n">80</span>));
+
+    <span class="k">await</span> tester.<span class="f">pumpWidget</span>(
+      <span class="f">MaterialApp</span>(
+        home: <span class="f">Center</span>(
+          child: <span class="f">Padding</span>(
+            padding: <span class="f">EdgeInsets</span>.<span class="f">symmetric</span>(horizontal: paddingHorizontal, vertical: paddingVertical),
+            child: <span class="f">Text</span>(label),
+          ),
+        ),
+      ),
+    );
+
+    <span class="c">// Verify widget rendered without throwing layout overflow assertions</span>
+    <span class="f">expect</span>(<span class="f">find</span>.<span class="f">byType</span>(<span class="f">Text</span>), <span class="f">findsOneWidget</span>);
+  });
+}</code></pre>
+            </div>
+
+            <!-- Tab 3: Stateful Machine -->
+            <div class="tab-pane" id="tab-stateful">
+              <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:flutter_test/flutter_test.dart'</span>;
+<span class="k">import</span> <span class="s">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
+
+<span class="k">class</span> <span class="t">BoundedQueueMachine</span> <span class="k">extends</span> <span class="t">StateMachine</span> {
+  <span class="k">final</span> queue = &lt;<span class="k">int</span>&gt;[];
+
+  <span class="m">@override</span>
+  <span class="t">List</span>&lt;<span class="t">StateRule</span>&gt; <span class="k">get</span> rules => [
+    <span class="f">StateRule</span>(<span class="s">'enqueue'</span>, execute: (tc) {
+      <span class="k">final</span> item = tc.<span class="f">draw</span>(<span class="f">integers</span>());
+      queue.<span class="f">add</span>(item);
+    }),
+    <span class="f">StateRule</span>(<span class="s">'dequeue'</span>, precondition: () => queue.isNotEmpty, execute: (tc) {
+      queue.<span class="f">removeAt</span>(<span class="n">0</span>);
+    }),
+  ];
+
+  <span class="m">@override</span>
+  <span class="t">List</span>&lt;<span class="t">StateInvariant</span>&gt; <span class="k">get</span> invariants => [
+    <span class="f">StateInvariant</span>(<span class="s">'queue size is non-negative'</span>, check: (tc) {
+      <span class="f">expect</span>(queue.length, <span class="f">greaterThanOrEqualTo</span>(<span class="n">0</span>));
+    }),
+  ];
+}
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="f">hegelFlutterStatefulTest</span>(<span class="s">'queue satisfies invariants'</span>, () => <span class="f">BoundedQueueMachine</span>());
+}</code></pre>
+            </div>
+
+            <!-- Tab 4: CI & Caching -->
+            <div class="tab-pane" id="tab-ci">
+              <pre><code class="language-yaml"><span class="c"># Instant regression replay across GitHub Actions CI</span>
+<span class="k">name</span>: <span class="s">Test Suite</span>
+<span class="k">on</span>: [<span class="s">push</span>, <span class="s">pull_request</span>]
+
+<span class="k">jobs</span>:
+  <span class="k">test</span>:
+    <span class="k">runs-on</span>: <span class="s">ubuntu-latest</span>
+    <span class="k">steps</span>:
+      - <span class="k">uses</span>: <span class="s">actions/checkout@v4</span>
+      
+      - <span class="k">name</span>: <span class="s">Cache Hegel Counterexamples</span>
+        <span class="k">uses</span>: <span class="s">actions/cache@v4</span>
+        <span class="k">with</span>:
+          <span class="k">path</span>: <span class="s">.hegel/</span>
+          <span class="k">key</span>: <span class="s">hegel-${{ runner.os }}-${{ github.ref_name }}</span>
+          <span class="k">restore-keys</span>: <span class="s">hegel-${{ runner.os }}-</span>
+
+      - <span class="k">run</span>: <span class="s">flutter test</span> <span class="c"># Replays failing counterexamples on iteration 1!</span></code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture & Foundation -->
+    <section id="architecture" class="section-arch">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// FOUNDATIONAL DESIGN</div>
+          <h2 class="section-title">Engineered from the Metal Up</h2>
+          <p class="section-desc">
+            How LetsTestTools harnesses native fuzzing without burdening developers with Rust build toolchains.
+          </p>
+        </div>
+
+        <div class="arch-grid">
+          <div class="arch-card">
+            <div class="arch-number">01</div>
+            <h3 class="arch-heading">Dart Native Assets (Hook Engine)</h3>
+            <p class="arch-body">
+              Using Dart's modern <code>hook/build.dart</code> build hook, precompiled native libraries (<code>libhegel_c</code>) are automatically verified via SHA-256 sidecars and packaged into your test artifact. Contributors never need <code>cargo</code> or a C toolchain installed.
+            </p>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-number">02</div>
+            <h3 class="arch-heading">Zero-Allocation FFI Interop</h3>
+            <p class="arch-body">
+              Execution data, mutations, and seed buffers are passed across Dart FFI via high-speed native pointers with pinned memory. Generators achieve millions of draws per second with negligible garbage collection overhead.
+            </p>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-number">03</div>
+            <h3 class="arch-heading">Deterministic Replay Database</h3>
+            <p class="arch-body">
+              Every discovered counterexample is hashed and persisted to <code>.hegel/examples/</code>. An automated <code>.gitignore</code> prevents repository pollution. When your test runs again locally or in CI, <code>Phase.reuse</code> executes the failure immediately.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <span class="brand-name">LetsTestTools<span class="domain-tld">.dev</span></span>
+        </div>
+        <p class="footer-desc">
+          Tools for testing. Built by testing the tools. Next-generation property testing infrastructure for Dart and Flutter.
+        </p>
+        <div class="footer-meta">
+          <span class="status-indicator-live"></span> All Systems Operational · Verified pub.dev Publisher
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4 class="footer-col-title">Packages</h4>
+          <a href="https://pub.dev/packages/hegeltest" target="_blank" rel="noopener">hegeltest (0.8.0)</a>
+          <a href="https://pub.dev/packages/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter (0.7.0)</a>
+          <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener">Publisher Profile</a>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Source Code</h4>
+          <a href="https://github.com/LetsTestTools/hegel-dart" target="_blank" rel="noopener">hegel-dart on GitHub</a>
+          <a href="https://github.com/LetsTestTools/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter on GitHub</a>
+          <a href="https://github.com/LetsTestTools" target="_blank" rel="noopener">LetsTestTools Organization</a>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Community</h4>
+          <a href="https://github.com/LetsTestTools/hegel-dart/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing Guide</a>
+          <a href="https://github.com/LetsTestTools/hegel-dart/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a>
+          <a href="mailto:conduct@letstesttools.dev">conduct@letstesttools.dev</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 LetsTestTools. Released under the MIT License.</p>
+      <p class="footer-host-badge">Hosted with GitHub Pages · Custom Domain: <code>letstesttools.dev</code></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
