@@ -237,6 +237,10 @@
               <span class="sim-stat-label">COUNTEREXAMPLE:</span>
               <span class="sim-stat-value" id="sim-reduction">NONE</span>
             </div>
+            <div class="sim-stat">
+              <span class="sim-stat-label">COVERAGE (tc.cover):</span>
+              <span class="sim-stat-value" id="sim-coverage">READY</span>
+            </div>
           </div>
         </div>
       </div>
@@ -259,10 +263,10 @@
             <div class="pkg-header">
               <div class="pkg-title-row">
                 <h3 class="pkg-name">hegeltest</h3>
-                <span class="pkg-version-pill">v0.8.0</span>
+                <span class="pkg-version-pill">v0.9.0</span>
               </div>
               <p class="pkg-summary">
-                Core property-based testing and fuzzing engine for pure Dart. Features coverage-guided generation, automated binary shrinking, and persistent counterexample caching.
+                Core property-based testing and fuzzing engine for pure Dart. Features coverage-guided generation, automated binary shrinking, distribution coverage contracts, and persistent counterexample caching.
               </p>
             </div>
 
@@ -273,10 +277,11 @@
             </div>
 
             <ul class="pkg-feature-list">
+              <li><strong>Distribution Coverage Contracts</strong>: Enforce edge-case exploration guarantees with <code>tc.cover()</code> and conditional classification via <code>tc.classify()</code>.</li>
+              <li><strong>Weighted Sampling</strong>: Directly sample raw values and generator branches with <code>sampledWeighted()</code> and <code>oneOfWeighted()</code>.</li>
               <li><strong>Persistent Database</strong>: Auto-caches discovered failures to <code>.hegel/examples/</code> for instant regression verification on iteration 1.</li>
               <li><strong>Zero Native Setup</strong>: Bundles precompiled <code>libhegel_c</code> binaries for macOS, Linux, and Windows; SHA-256 verified via <code>hook/build.dart</code>.</li>
               <li><strong>Rich Generator Library</strong>: Primitives, text/regex, recursive collections, temporal dates, and IP networks.</li>
-              <li><strong>Distribution Observability</strong>: Track data dispersion and category frequencies with <code>tc.collect()</code>.</li>
             </ul>
 
             <div class="pkg-links">
@@ -294,10 +299,10 @@
             <div class="pkg-header">
               <div class="pkg-title-row">
                 <h3 class="pkg-name">hegeltest_flutter</h3>
-                <span class="pkg-version-pill pill-flutter">v0.8.0</span>
+                <span class="pkg-version-pill pill-flutter">v0.9.0</span>
               </div>
               <p class="pkg-summary">
-                First-class Flutter integration for accessibility monkey fuzzing, responsive layout sweeps, state machine testing, and widget property verification without <code>package:test</code> friction.
+                First-class Flutter integration for accessibility monkey fuzzing, responsive layout sweeps, distribution coverage contracts, state machine testing, and widget property verification.
               </p>
             </div>
 
@@ -310,8 +315,8 @@
             <ul class="pkg-feature-list">
               <li><strong><code>hegelFlutterMonkeyTest</code></strong>: Traverses active <code>SemanticsOwner</code> accessibility trees and fuzzes actions with automated minimal step shrinking.</li>
               <li><strong><code>hegelFlutterLayoutSweepTest</code></strong>: Sweeps viewports, dynamic font scaling (<code>TextScaler</code>), and RTL/LTR directions to detect and shrink <code>RenderFlex overflowed</code> bugs.</li>
+              <li><strong>Coverage &amp; Weighted Combinators</strong>: Direct access to <code>tc.cover()</code>, <code>tc.classify()</code>, and weighted generators inside all Flutter test suites.</li>
               <li><strong><code>hegelFlutterWidgetTest</code></strong>: Run property fuzzing directly inside <code>testWidgets</code> with automatic zone and widget lifecycle binding.</li>
-              <li><strong><code>hegelFlutterStatefulTest</code></strong>: Verify complex UI state machines and stateful business logic with automated rule sequencing and invariant checking.</li>
               <li><strong>Persistent Database</strong>: Auto-derives <code>databaseKey</code> from widget test descriptions; instantly replays failing UI configurations on iteration 1.</li>
             </ul>
 
@@ -408,15 +413,20 @@
 <span class="k">import</span> <span class="s">'package:hegeltest/hegeltest.dart'</span>;
 
 <span class="k">void</span> <span class="f">main</span>() {
-  <span class="f">hegelTest</span>(<span class="s">'reverse is involutory'</span>, (tc) {
-    <span class="c">// Draw pseudo-random inputs with automatic shrinking</span>
-    <span class="k">final</span> xs = tc.<span class="f">draw</span>(<span class="f">lists</span>(<span class="f">integers</span>()), label: <span class="s">'xs'</span>);
+  <span class="f">hegelTest</span>(<span class="s">'payment handles currency matrix &amp; zero amounts'</span>, (tc) {
+    <span class="c">// Weighted domain generator</span>
+    <span class="k">final</span> currency = tc.<span class="f">draw</span>(<span class="f">sampledWeighted</span>([(80, <span class="s">'USD'</span>), (15, <span class="s">'EUR'</span>), (5, <span class="s">'JPY'</span>)]));
+    <span class="k">final</span> amount = tc.<span class="f">draw</span>(<span class="f">integers</span>(min: <span class="n">0</span>, max: <span class="n">500000</span>), label: <span class="s">'amount'</span>);
 
-    <span class="c">// Track generator distribution</span>
-    tc.<span class="f">collect</span>(xs.isEmpty ? <span class="s">'empty'</span> : (xs.length &lt; <span class="n">10</span> ? <span class="s">'short'</span> : <span class="s">'long'</span>));
+    <span class="c">// Classify distributions conditionally</span>
+    tc.<span class="f">classify</span>(amount == <span class="n">0</span>, <span class="s">'zero_amount'</span>);
+    tc.<span class="f">classify</span>(amount &gt; <span class="n">250000</span>, <span class="s">'large_amount'</span>);
 
-    <span class="c">// Verify universal mathematical property</span>
-    <span class="f">expect</span>(xs.reversed.toList().reversed.toList(), <span class="f">equals</span>(xs));
+    <span class="c">// Coverage Contract: assert zero-amount edge cases tested &gt;= 10%</span>
+    tc.<span class="f">cover</span>(<span class="n">10.0</span>, amount == <span class="n">0</span>, <span class="s">'zero_amount_coverage'</span>);
+
+    <span class="k">final</span> invoice = <span class="f">createInvoice</span>(amount: amount, currency: currency);
+    <span class="f">expect</span>(invoice.total, <span class="f">equals</span>(amount));
   });
 }</code></pre>
             </div>
@@ -622,8 +632,8 @@
       <div class="footer-links-group">
         <div class="footer-col">
           <h4 class="footer-col-title">Packages</h4>
-          <a href="https://pub.dev/packages/hegeltest" target="_blank" rel="noopener">hegeltest (0.8.0)</a>
-          <a href="https://pub.dev/packages/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter (0.7.0)</a>
+          <a href="https://pub.dev/packages/hegeltest" target="_blank" rel="noopener">hegeltest (0.9.0)</a>
+          <a href="https://pub.dev/packages/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter (0.9.0)</a>
           <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener">Publisher Profile</a>
         </div>
 

@@ -683,11 +683,12 @@ section {
 .log-shrink { color: var(--amber-light); }
 .log-pass { color: var(--emerald-light); }
 .log-db { color: #a78bfa; }
+.log-coverage { color: #38bdf8; }
 .text-muted { color: var(--text-muted); }
 
 .simulator-footer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   padding: 16px 24px;
   background: var(--bg-panel);
   border-top: 1px solid var(--border-hairline);

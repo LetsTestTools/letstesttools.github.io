@@ -75,6 +75,7 @@ function initSimulator() {
   const statusEl = document.getElementById('sim-status');
   const casesEl = document.getElementById('sim-cases');
   const reductionEl = document.getElementById('sim-reduction');
+  const coverageEl = document.getElementById('sim-coverage');
 
   let isRunning = false;
   let timeoutIds = [];
@@ -103,6 +104,10 @@ function initSimulator() {
     statusEl.className = 'sim-stat-value';
     casesEl.textContent = '0 / 100';
     reductionEl.textContent = 'NONE';
+    if (coverageEl) {
+      coverageEl.textContent = 'READY';
+      coverageEl.className = 'sim-stat-value';
+    }
     runBtn.disabled = false;
     runBtn.textContent = '▶ Run Property Fuzz';
   };
@@ -118,21 +123,32 @@ function initSimulator() {
     statusEl.className = 'sim-stat-value text-sky';
     casesEl.textContent = '0 / 100';
     reductionEl.textContent = 'NONE';
+    if (coverageEl) {
+      coverageEl.textContent = 'TRACKING...';
+      coverageEl.className = 'sim-stat-value text-amber';
+    }
 
     log('<span class="log-step">[hegeltest]</span> Initializing native fuzzing engine (libhegel_c)...', 'text-muted');
     log('<span class="log-step">[hegeltest]</span> Running Phase.generate with seed=0x7F2A9C01...', 'text-muted');
+    log('<span class="log-coverage">[tc.cover]</span> Contract registered: "negative_sums" >= 20.0% coverage required', 'text-muted');
 
     // Step 1: Passing cases
     const passingSteps = [
-      { delay: 300, cases: '12 / 100', text: '<span class="log-pass">✓</span> [draw #12] xs = [14, 98, 2, 45] -> sum: 159 (Passed)' },
-      { delay: 700, cases: '27 / 100', text: '<span class="log-pass">✓</span> [draw #27] xs = [0, 891, 102] -> sum: 993 (Passed)' },
-      { delay: 1100, cases: '39 / 100', text: '<span class="log-pass">✓</span> [draw #39] xs = [49, 12, 8] -> sum: 69 (Passed)' },
-      { delay: 1500, cases: '47 / 100', text: '<span class="log-fail">✗</span> [draw #47] xs = [812, 19, -942, 12, 55, -4] -> sum: -48 (FAILED)' }
+      { delay: 300, cases: '12 / 100', cov: '25.0% (3/12)', text: '<span class="log-pass">✓</span> [draw #12] xs = [14, 98, 2, 45] -> sum: 159 (Passed)' },
+      { delay: 700, cases: '27 / 100', cov: '29.6% (8/27)', text: '<span class="log-pass">✓</span> [draw #27] xs = [0, 891, 102] -> sum: 993 (Passed)' },
+      { delay: 1100, cases: '39 / 100', cov: '33.3% (13/39)', text: '<span class="log-pass">✓</span> [draw #39] xs = [49, 12, 8] -> sum: 69 (Passed)' },
+      { delay: 1500, cases: '47 / 100', cov: '34.0% (MET)', text: '<span class="log-fail">✗</span> [draw #47] xs = [812, 19, -942, 12, 55, -4] -> sum: -48 (FAILED)' }
     ];
 
     passingSteps.forEach(s => {
       timeoutIds.push(setTimeout(() => {
         casesEl.textContent = s.cases;
+        if (coverageEl) {
+          coverageEl.textContent = s.cov;
+          if (s.cov.includes('MET')) {
+            coverageEl.className = 'sim-stat-value text-emerald';
+          }
+        }
         log(s.text);
       }, s.delay));
     });
@@ -159,7 +175,7 @@ function initSimulator() {
       }, s.delay));
     });
 
-    // Step 3: Persistence to .hegel/
+    // Step 3: Persistence to .hegel/ & Coverage Check
     timeoutIds.push(setTimeout(() => {
       statusEl.textContent = 'PHASE.PERSIST';
       statusEl.className = 'sim-stat-value text-emerald';
@@ -167,6 +183,8 @@ function initSimulator() {
       log('<br><span class="log-db">💾 [database]</span> Hashed minimal counterexample -> SHA256: 4e9f82a1');
       log('<span class="log-db">💾 [database]</span> Saved reproduction blob to <code>.hegel/examples/4e9f82a1.blob</code>');
       log('<span class="log-db">💾 [database]</span> Ensured <code>.hegel/.gitignore</code> exists (clean git status).');
+      log('<span class="log-coverage">📊 [tc.cover]</span> Target "negative_sums": observed 34.0% &gt;= 20.0% required &rarr; Contract passed');
+      log('<span class="log-coverage">📊 [tc.classify]</span> Distribution: 55% positive, 34% negative, 11% zero');
       log('<br><span class="log-pass">✔ [DONE]</span> On next test run (local dev or CI), known counterexample <strong>[-1]</strong> will replay on <strong>iteration 1</strong> before random fuzzing begins!');
       
       statusEl.textContent = 'CACHED (REPLAY READY)';
