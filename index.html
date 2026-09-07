@@ -294,10 +294,10 @@
             <div class="pkg-header">
               <div class="pkg-title-row">
                 <h3 class="pkg-name">hegeltest_flutter</h3>
-                <span class="pkg-version-pill pill-flutter">v0.7.0</span>
+                <span class="pkg-version-pill pill-flutter">v0.8.0</span>
               </div>
               <p class="pkg-summary">
-                First-class Flutter integration for property-based UI sweeps, state machine testing, and widget constraint stress-testing without <code>package:test</code> friction.
+                First-class Flutter integration for accessibility monkey fuzzing, responsive layout sweeps, state machine testing, and widget property verification without <code>package:test</code> friction.
               </p>
             </div>
 
@@ -308,10 +308,11 @@
             </div>
 
             <ul class="pkg-feature-list">
-              <li><strong><code>hegelFlutterWidgetTest</code></strong>: Run property fuzzing directly inside <code>testWidgets</code> to sweep layout paddings, text constraints, and screen sizes.</li>
+              <li><strong><code>hegelFlutterMonkeyTest</code></strong>: Traverses active <code>SemanticsOwner</code> accessibility trees and fuzzes actions with automated minimal step shrinking.</li>
+              <li><strong><code>hegelFlutterLayoutSweepTest</code></strong>: Sweeps viewports, dynamic font scaling (<code>TextScaler</code>), and RTL/LTR directions to detect and shrink <code>RenderFlex overflowed</code> bugs.</li>
+              <li><strong><code>hegelFlutterWidgetTest</code></strong>: Run property fuzzing directly inside <code>testWidgets</code> with automatic zone and widget lifecycle binding.</li>
               <li><strong><code>hegelFlutterStatefulTest</code></strong>: Verify complex UI state machines and stateful business logic with automated rule sequencing and invariant checking.</li>
-              <li><strong>Persistent Database</strong>: Auto-derives <code>databaseKey</code> from widget test descriptions; instantly replays failing UI configurations.</li>
-              <li><strong><code>runHegelFlutterTest</code></strong>: Standalone test runner that returns a <code>RunResult</code> for custom harnesses, bots, and CI checks.</li>
+              <li><strong>Persistent Database</strong>: Auto-derives <code>databaseKey</code> from widget test descriptions; instantly replays failing UI configurations on iteration 1.</li>
             </ul>
 
             <div class="pkg-links">
@@ -365,8 +366,8 @@
               </tr>
               <tr>
                 <td class="dim-title">Flutter Widgets</td>
-                <td class="cell-trad">Fixed static golden snapshots</td>
-                <td class="cell-prop">Sweep paddings, typography, and constraints across hundreds of passes</td>
+                <td class="cell-trad">Fixed golden snapshots &amp; manual tap paths</td>
+                <td class="cell-prop"><strong>Semantics monkey fuzzing</strong> &amp; responsive layout sweeps across hundreds of viewports, font scales, and RTL/LTR directions</td>
               </tr>
               <tr>
                 <td class="dim-title">Execution Speed</td>
@@ -394,6 +395,8 @@
           <div class="editor-tabs">
             <button class="editor-tab active" data-tab="tab-unit">Dart Property Test</button>
             <button class="editor-tab" data-tab="tab-widget">Flutter Widget Sweep</button>
+            <button class="editor-tab" data-tab="tab-monkey">Accessibility Monkey Fuzzing</button>
+            <button class="editor-tab" data-tab="tab-layout">Layout &amp; Screen Sweeps</button>
             <button class="editor-tab" data-tab="tab-stateful">State Machine Invariants</button>
             <button class="editor-tab" data-tab="tab-ci">CI &amp; Database Caching</button>
           </div>
@@ -447,7 +450,63 @@
 }</code></pre>
             </div>
 
-            <!-- Tab 3: Stateful Machine -->
+            <!-- Tab 3: Monkey Fuzzing -->
+            <div class="tab-pane" id="tab-monkey">
+              <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:flutter/material.dart'</span>;
+<span class="k">import</span> <span class="s">'package:flutter_test/flutter_test.dart'</span>;
+<span class="k">import</span> <span class="s">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="c">// Traverses SemanticsOwner tree &amp; fuzzes actions (taps, inputs, scrolls)</span>
+  <span class="f">hegelFlutterMonkeyTest</span>(
+    <span class="s">'fuzzes checkout workflow without unhandled exceptions'</span>,
+    createWidget: (tc) =&gt; <span class="k">const</span> <span class="t">CheckoutApp</span>(),
+    steps: <span class="n">25</span>,
+    allowedActions: [
+      <span class="t">SemanticsAction</span>.tap,
+      <span class="t">SemanticsAction</span>.setText,
+      <span class="t">SemanticsAction</span>.scrollDown,
+    ],
+    invariant: (tc, tester) <span class="k">async</span> {
+      <span class="c">// Invariant checked after every fuzzed action sequence</span>
+      <span class="f">expect</span>(<span class="f">find</span>.<span class="f">byType</span>(<span class="t">CheckoutApp</span>), <span class="f">findsOneWidget</span>);
+    },
+  );
+  <span class="c">// On crash, Hegel's engine automatically shrinks down to minimal steps:</span>
+  <span class="c">// 1. tap on "Add Coupon" (id=14)</span>
+  <span class="c">// 2. setText on "Coupon Code" (id=18) with "DISCOUNT99"</span>
+  <span class="c">// 3. tap on "Apply" (id=19) =&gt; throws RangeError</span>
+}</code></pre>
+            </div>
+
+            <!-- Tab 4: Layout Sweep -->
+            <div class="tab-pane" id="tab-layout">
+              <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:flutter/material.dart'</span>;
+<span class="k">import</span> <span class="s">'package:flutter_test/flutter_test.dart'</span>;
+<span class="k">import</span> <span class="s">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
+
+<span class="k">void</span> <span class="f">main</span>() {
+  <span class="c">// Sweeps screen sizes, TextScaler (font sizes), &amp; RTL/LTR directions</span>
+  <span class="f">hegelFlutterLayoutSweepTest</span>(
+    <span class="s">'user profile card never overflows across screens and text scales'</span>,
+    sweepConfig: <span class="k">const</span> <span class="t">LayoutSweepConfig</span>(
+      minWidth: <span class="n">320</span>,
+      maxWidth: <span class="n">1024</span>,
+      minHeight: <span class="n">480</span>,
+      maxHeight: <span class="n">1200</span>,
+      minTextScale: <span class="n">0.8</span>,
+      maxTextScale: <span class="n">2.5</span>,
+    ),
+    builder: (tc, sample) =&gt; <span class="k">const</span> <span class="t">UserProfileCard</span>(),
+  );
+  <span class="c">// Catches "A RenderFlex overflowed by X pixels" &amp; shrinks viewport/scale:</span>
+  <span class="c">// Layout invariant violated:</span>
+  <span class="c">//   Configuration: LayoutSample(320.0x480.0, textScale: 2.10x, direction: rtl)</span>
+  <span class="c">//   Error: A RenderFlex overflowed by 14 pixels on the right.</span>
+}</code></pre>
+            </div>
+
+            <!-- Tab 5: Stateful Machine -->
             <div class="tab-pane" id="tab-stateful">
               <pre><code class="language-dart"><span class="k">import</span> <span class="s">'package:flutter_test/flutter_test.dart'</span>;
 <span class="k">import</span> <span class="s">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
