@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — LetsTestTools (hegeltest & hegeltest_flutter)</title>
+  <meta name="description" content="Complete developer documentation for hegeltest and hegeltest_flutter: property-based testing, binary shrinking, stateful model verification, semantics monkey fuzzing, and coverage contracts.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="LetsTestTools Documentation — Property Testing for Dart & Flutter">
+  <meta property="og:description" content="Guides, generator cheat sheets, coverage contract recipes, and Flutter UI fuzzing references for hegeltest 0.9.0.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://letstesttools.dev/docs.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307090e'/><circle cx='50' cy='50' r='36' stroke='%2338bdf8' stroke-width='6' fill='none'/><circle cx='50' cy='50' r='20' stroke='%23f59e0b' stroke-width='6' fill='none'/><circle cx='50' cy='50' r='6' fill='%2310b981'/><line x1='50' y1='6' x2='50' y2='22' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='50' y1='78' x2='50' y2='94' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='6' y1='50' x2='22' y2='50' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/><line x1='78' y1='50' x2='94' y2='50' stroke='%2338bdf8' stroke-width='6' stroke-linecap='round'/></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Site Navigation -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="LetsTestTools Home">
+        <svg class="brand-icon" viewBox="0 0 32 32" width="24" height="24" fill="none">
+          <rect width="32" height="32" rx="8" fill="#131822" stroke="#243044" stroke-width="1.5"/>
+          <path d="M7 16L13 22L25 10" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="3" fill="#f59e0b"/>
+        </svg>
+        <span class="brand-name">LetsTestTools<span class="domain-tld">.dev</span></span>
+      </a>
+
+      <nav class="nav-menu" id="nav-menu">
+        <a href="docs.html" class="nav-link active" style="color: var(--sky); font-weight: 600;">Documentation</a>
+        <a href="index.html#manifesto" class="nav-link">Our Philosophy</a>
+        <a href="index.html#packages" class="nav-link">Packages</a>
+        <a href="index.html#simulator" class="nav-link">Live Fuzzing</a>
+        <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener" class="nav-link nav-link-badge">
+          <span class="shield-icon">🛡️</span> pub.dev Verified
+        </a>
+        <a href="https://github.com/LetsTestTools" target="_blank" rel="noopener" class="btn btn-outline btn-sm">
+          <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-container">
+    <div class="docs-layout">
+      
+      <!-- Sticky Sidebar -->
+      <aside class="docs-sidebar">
+        <div class="docs-search-box">
+          <svg class="docs-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="docs-search" class="docs-search-input" placeholder="Search docs & generators..." aria-label="Search documentation">
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Getting Started</div>
+          <ul class="docs-nav-list">
+            <li><a href="#overview" class="docs-nav-link active">Architecture & Overview</a></li>
+            <li><a href="#quickstart-dart" class="docs-nav-link">Quickstart: Dart <span class="docs-nav-badge">Core</span></a></li>
+            <li><a href="#quickstart-flutter" class="docs-nav-link">Quickstart: Flutter <span class="docs-nav-badge">UI</span></a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Core Concepts</div>
+          <ul class="docs-nav-list">
+            <li><a href="#property-testing" class="docs-nav-link">Property Testing vs Unit Testing</a></li>
+            <li><a href="#binary-shrinking" class="docs-nav-link">Deterministic Binary Shrinking</a></li>
+            <li><a href="#stateful-testing" class="docs-nav-link">Stateful Invariant Verification</a></li>
+            <li><a href="#persistent-db" class="docs-nav-link">Regression Database (.hegel/)</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Generators Reference</div>
+          <ul class="docs-nav-list">
+            <li><a href="#gen-primitives" class="docs-nav-link">Primitives & Numbers</a></li>
+            <li><a href="#gen-strings" class="docs-nav-link">Strings & Regular Expressions</a></li>
+            <li><a href="#gen-collections" class="docs-nav-link">Collections (Lists, Sets, Maps)</a></li>
+            <li><a href="#gen-combinators" class="docs-nav-link">Combinators & Weighted Choice</a></li>
+            <li><a href="#gen-temporal-network" class="docs-nav-link">Temporal & Network Types</a></li>
+            <li><a href="#gen-custom" class="docs-nav-link">Custom Domain Composites</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Distribution Contracts</div>
+          <ul class="docs-nav-list">
+            <li><a href="#coverage-contracts" class="docs-nav-link">tc.cover() Assertions</a></li>
+            <li><a href="#classification" class="docs-nav-link">tc.classify() & tc.collect()</a></li>
+            <li><a href="#distribution-telemetry" class="docs-nav-link">Telemetry & Failure Output</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Flutter Testing Suite</div>
+          <ul class="docs-nav-list">
+            <li><a href="#flutter-unit" class="docs-nav-link">hegelFlutterTest()</a></li>
+            <li><a href="#flutter-widget" class="docs-nav-link">hegelFlutterWidgetTest()</a></li>
+            <li><a href="#flutter-monkey" class="docs-nav-link">hegelFlutterMonkeyTest() <span class="docs-nav-badge">New</span></a></li>
+            <li><a href="#flutter-layout-sweep" class="docs-nav-link">hegelFlutterLayoutSweepTest() <span class="docs-nav-badge">New</span></a></li>
+            <li><a href="#flutter-stateful" class="docs-nav-link">hegelFlutterStatefulTest()</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-nav-group">
+          <div class="docs-nav-heading">Operations & CI/CD</div>
+          <ul class="docs-nav-list">
+            <li><a href="#ci-caching" class="docs-nav-link">CI/CD Regression Caching</a></li>
+            <li><a href="#config-reference" class="docs-nav-link">Config & Environment Flags</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Main Docs Content Area -->
+      <article class="docs-main">
+        
+        <!-- Header Hero -->
+        <div class="docs-header-hero">
+          <div class="docs-badge-strip">
+            <span class="badge badge-sky">v0.9.0 Stable</span>
+            <span class="badge badge-amber">Dart &ge; 3.10</span>
+            <span class="badge badge-emerald">Flutter &ge; 3.38</span>
+            <span class="badge badge-sky">Rust FFI Core</span>
+          </div>
+          <h1 class="docs-title">Technical Documentation & API Reference</h1>
+          <p class="docs-subtitle">
+            Complete guide to building robust software with <code>hegeltest</code> and <code>hegeltest_flutter</code>. From primitive property checks to automated binary shrinking, accessibility monkey fuzzing, and distribution coverage contracts.
+          </p>
+        </div>
+
+        <!-- Section 1: Architecture & Overview -->
+        <section id="overview" class="docs-section">
+          <h2 class="docs-section-title">
+            Architecture & Overview
+            <a href="#overview" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            <code>hegeltest</code> is a state-of-the-art property-based testing and fuzzing engine for Dart and Flutter. Unlike traditional randomized testing that sprays arbitrary values, Hegel is built upon a high-performance native Rust core (<code>libhegel</code>) communicating via zero-copy C-FFI.
+          </p>
+          
+          <div class="docs-callout docs-callout-note">
+            <strong>Industrial Design Principle:</strong> Pure-Dart property testing packages suffer from slow shrinking cycles and lack of inter-run memory. Hegel pairs high-level idiomatic Dart APIs with native deterministic PRNG streams, byte-level test case shrinking, and persistent regression databases on disk.
+          </div>
+
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Component</th>
+                  <th>Package</th>
+                  <th>Responsibility</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Core Engine</strong></td>
+                  <td><code>hegeltest</code></td>
+                  <td>Native FFI bindings, PRNG byte streams, deterministic shrinking, standalone runner, and standard generator library.</td>
+                </tr>
+                <tr>
+                  <td><strong>Flutter Bridge</strong></td>
+                  <td><code>hegeltest_flutter</code></td>
+                  <td><code>flutter_test</code> harness integration, widget tree sweeps, accessibility tree monkey fuzzing, and layout constraint invariant checks.</td>
+                </tr>
+                <tr>
+                  <td><strong>Native Core</strong></td>
+                  <td><code>libhegel</code></td>
+                  <td>Cross-platform pre-compiled binaries (macOS arm64, Linux x64/arm64, Windows x64/arm64) with SHA-256 integrity verification.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 2: Quickstart: Dart -->
+        <section id="quickstart-dart" class="docs-section">
+          <h2 class="docs-section-title">
+            Quickstart: Dart Core
+            <a href="#quickstart-dart" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Add <code>hegeltest</code> to your Dart project's <code>dev_dependencies</code>:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">terminal</span>
+              <button class="docs-copy-btn" data-code="dart pub add dev:hegeltest">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>dart pub add dev:hegeltest</code></pre>
+            </div>
+          </div>
+
+          <p class="docs-lead">
+            Write your first property test in <code>test/math_test.dart</code>:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="import 'package:test/test.dart';
+import 'package:hegeltest/hegeltest.dart';
+
+void main() {
+  hegelTest('addition is commutative across integers', (tc) {
+    final a = tc.draw(integers(), label: 'a');
+    final b = tc.draw(integers(), label: 'b');
+    expect(a + b, equals(b + a));
+  }, testCases: 200);
+}">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code><span class="text-sky">import</span> <span class="text-emerald">'package:test/test.dart'</span>;
+<span class="text-sky">import</span> <span class="text-emerald">'package:hegeltest/hegeltest.dart'</span>;
+
+<span class="text-sky">void</span> <span class="text-amber">main</span>() {
+  hegelTest(<span class="text-emerald">'addition is commutative across integers'</span>, (tc) {
+    <span class="text-sky">final</span> a = tc.draw(integers(), label: <span class="text-emerald">'a'</span>);
+    <span class="text-sky">final</span> b = tc.draw(integers(), label: <span class="text-emerald">'b'</span>);
+    expect(a + b, equals(b + a));
+  }, testCases: <span class="text-amber">200</span>);
+}</code></pre>
+            </div>
+          </div>
+
+          <p class="docs-lead">
+            Run standard Dart tests as usual. Hegel's Dart build hook dynamically unpacks and links the native library:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">terminal</span>
+              <button class="docs-copy-btn" data-code="dart test">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>dart test</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 3: Quickstart: Flutter -->
+        <section id="quickstart-flutter" class="docs-section">
+          <h2 class="docs-section-title">
+            Quickstart: Flutter
+            <a href="#quickstart-flutter" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Flutter projects use <code>flutter_test</code> rather than <code>package:test</code>. Install <code>hegeltest_flutter</code> to seamlessly bind the property runner inside Flutter's widget testing lifecycle:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">terminal</span>
+              <button class="docs-copy-btn" data-code="flutter pub add dev:hegeltest_flutter">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>flutter pub add dev:hegeltest_flutter</code></pre>
+            </div>
+          </div>
+
+          <p class="docs-lead">
+            Create a test in <code>test/widget_property_test.dart</code>:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hegeltest_flutter/hegeltest_flutter.dart';
+
+void main() {
+  hegelFlutterWidgetTest('text renders correctly without throwing', (tc, tester) async {
+    final title = tc.draw(text(minSize: 1, maxSize: 80), label: 'title');
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(body: Center(child: Text(title))),
+    ));
+    expect(find.text(title), findsOneWidget);
+  });
+}">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code><span class="text-sky">import</span> <span class="text-emerald">'package:flutter/material.dart'</span>;
+<span class="text-sky">import</span> <span class="text-emerald">'package:flutter_test/flutter_test.dart'</span>;
+<span class="text-sky">import</span> <span class="text-emerald">'package:hegeltest_flutter/hegeltest_flutter.dart'</span>;
+
+<span class="text-sky">void</span> <span class="text-amber">main</span>() {
+  hegelFlutterWidgetTest(<span class="text-emerald">'text renders correctly without throwing'</span>, (tc, tester) <span class="text-sky">async</span> {
+    <span class="text-sky">final</span> title = tc.draw(text(minSize: <span class="text-amber">1</span>, maxSize: <span class="text-amber">80</span>), label: <span class="text-emerald">'title'</span>);
+    <span class="text-sky">await</span> tester.pumpWidget(MaterialApp(
+      home: Scaffold(body: Center(child: Text(title))),
+    ));
+    expect(find.text(title), findsOneWidget);
+  });
+}</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Property Testing vs Unit Testing -->
+        <section id="property-testing" class="docs-section">
+          <h2 class="docs-section-title">
+            Property Testing vs Unit Testing
+            <a href="#property-testing" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Traditional unit tests verify software by asserting hand-picked examples: <em>"When given <code>[1, 2, 3]</code>, return <code>[3, 2, 1]</code>"</em>. This leaves massive voids where edge cases hide: empty collections, Unicode zero-width spaces, integer overflows, NaN, and complex state sequences.
+          </p>
+
+          <p class="docs-lead">
+            Property-based testing inverts this paradigm: <strong>you define universal invariants</strong> (e.g. <em>"Reversing a list twice returns the identical list"</em> or <em>"Encoding then decoding JSON produces an equivalent object"</em>), and Hegel automatically constructs hundreds of adversarial inputs to break your assertions.
+          </p>
+        </section>
+
+        <!-- Section 5: Binary Shrinking -->
+        <section id="binary-shrinking" class="docs-section">
+          <h2 class="docs-section-title">
+            Deterministic Binary Shrinking
+            <a href="#binary-shrinking" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            When random fuzzing discovers a defect, the failing input is usually bloated with dozens of irrelevant fields and noise. Hegel's native Rust engine executes <strong>deterministic byte-level shrinking</strong>:
+          </p>
+
+          <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li>Input generation is driven by a canonical byte choice buffer consumed through FFI.</li>
+            <li>Upon failure, the engine applies binary search, bit deletion, zero-byte minimization, and token reductions directly to the input choice buffer.</li>
+            <li>The test iteration is repeatedly re-executed until the <em>minimal reproducing counterexample</em> is isolated.</li>
+          </ul>
+
+          <div class="docs-callout docs-callout-tip">
+            <strong>Shrinking Output Example:</strong> A 500-element list with random negative integers that failed on negative numbers is automatically reduced to exactly <code>[-1]</code>, saving hours of debugging time.
+          </div>
+        </section>
+
+        <!-- Section 6: Stateful Testing -->
+        <section id="stateful-testing" class="docs-section">
+          <h2 class="docs-section-title">
+            Stateful Invariant Verification
+            <a href="#stateful-testing" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Stateful systems (caches, state management stores, database drivers, UI navigation stacks) fail due to subtle sequences of actions rather than a single input. With <code>StateMachine</code>, you declare actions and invariants:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="class StackMachine extends StateMachine {
+  final List<int> actual = [];
+  int modelCount = 0;
+
+  @override
+  List<StateRule> get rules => [
+    StateRule('push', execute: (tc) {
+      final val = tc.draw(integers());
+      actual.add(val);
+      modelCount++;
+    }),
+    StateRule('pop', precondition: () => actual.isNotEmpty, execute: (tc) {
+      actual.removeLast();
+      modelCount--;
+    }),
+  ];
+
+  @override
+  List<StateInvariant> get invariants => [
+    StateInvariant('actual length equals model count', check: (tc) {
+      expect(actual.length, equals(modelCount));
+    }),
+  ];
+}
+
+void main() {
+  hegelTest('stack preserves model invariant', () => StackMachine());
+}">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code><span class="text-sky">class</span> <span class="text-amber">StackMachine</span> <span class="text-sky">extends</span> StateMachine {
+  <span class="text-sky">final</span> List&lt;<span class="text-sky">int</span>&gt; actual = [];
+  <span class="text-sky">int</span> modelCount = <span class="text-amber">0</span>;
+
+  <span class="text-sky">@override</span>
+  List&lt;StateRule&gt; <span class="text-sky">get</span> rules =&gt; [
+    StateRule(<span class="text-emerald">'push'</span>, execute: (tc) {
+      <span class="text-sky">final</span> val = tc.draw(integers());
+      actual.add(val);
+      modelCount++;
+    }),
+    StateRule(<span class="text-emerald">'pop'</span>, precondition: () =&gt; actual.isNotEmpty, execute: (tc) {
+      actual.removeLast();
+      modelCount--;
+    }),
+  ];
+
+  <span class="text-sky">@override</span>
+  List&lt;StateInvariant&gt; <span class="text-sky">get</span> invariants =&gt; [
+    StateInvariant(<span class="text-emerald">'actual length equals model count'</span>, check: (tc) {
+      expect(actual.length, equals(modelCount));
+    }),
+  ];
+}
+
+<span class="text-sky">void</span> <span class="text-amber">main</span>() {
+  hegelTest(<span class="text-emerald">'stack preserves model invariant'</span>, () =&gt; StackMachine());
+}</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 7: Persistent Database -->
+        <section id="persistent-db" class="docs-section">
+          <h2 class="docs-section-title">
+            Persistent Regression Database (.hegel/)
+            <a href="#persistent-db" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            When Hegel discovers a failing input, it persists the minimal reproduction seed to <code>.hegel/examples/</code> on disk. On every subsequent test execution:
+          </p>
+
+          <ol style="color: var(--text-secondary); line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+            <li><strong>Phase 1 (Reuse):</strong> Prior failures are loaded from disk and replayed on iteration 1. If your bug was not fixed, the test fails in sub-milliseconds without wasting cycles generating new random values.</li>
+            <li><strong>Phase 2 (Generate):</strong> If all known historical failures pass, fresh property exploration continues.</li>
+            <li><strong>Phase 3 (Shrink):</strong> If a new failure is encountered, it is minimized and saved back to the database.</li>
+          </ol>
+
+          <div class="docs-callout docs-callout-warn">
+            <strong>Git Continuity:</strong> Hegel automatically places a <code>.gitignore</code> inside <code>.hegel/</code>. However, caching the <code>.hegel/</code> directory in your CI workflow prevents regression slips across pull requests.
+          </div>
+        </section>
+
+        <!-- Section 8: Generators Reference -->
+        <section id="gen-primitives" class="docs-section">
+          <h2 class="docs-section-title">
+            Generators Cheat Sheet
+            <a href="#gen-primitives" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Import either <code>package:hegeltest/hegeltest.dart</code> or <code>package:hegeltest/generators.dart</code> to access the comprehensive generator catalog.
+          </p>
+
+          <h3 id="primitives-numbers" class="docs-h3">1. Primitives & Numbers</h3>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Generator</th>
+                  <th>Type</th>
+                  <th>Parameters & Constraints</th>
+                  <th>Edge Cases Covered</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>integers()</code></td>
+                  <td><code>int</code></td>
+                  <td><code>min</code>, <code>max</code> (supports full 64-bit range)</td>
+                  <td><code>0</code>, <code>1</code>, <code>-1</code>, <code>min</code>, <code>max</code></td>
+                </tr>
+                <tr>
+                  <td><code>doubles()</code></td>
+                  <td><code>double</code></td>
+                  <td><code>min</code>, <code>max</code>, <code>includeSpecialValues: true</code></td>
+                  <td><code>0.0</code>, <code>-0.0</code>, <code>NaN</code>, <code>+Infinity</code>, <code>-Infinity</code></td>
+                </tr>
+                <tr>
+                  <td><code>booleans()</code></td>
+                  <td><code>bool</code></td>
+                  <td>None</td>
+                  <td><code>true</code>, <code>false</code></td>
+                </tr>
+                <tr>
+                  <td><code>bigIntegers()</code></td>
+                  <td><code>BigInt</code></td>
+                  <td><code>min</code>, <code>max</code>, <code>bitLength</code></td>
+                  <td>Arbitrary-precision integer boundaries</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="gen-strings" class="docs-h3">2. Strings & Text</h3>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Generator</th>
+                  <th>Parameters</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>text()</code></td>
+                  <td><code>alphabet</code>, <code>minSize</code>, <code>maxSize</code></td>
+                  <td>Full Unicode strings including surrogate pairs, zero-width joiners, and emoji.</td>
+                </tr>
+                <tr>
+                  <td><code>fromRegex(pattern)</code></td>
+                  <td><code>String pattern</code></td>
+                  <td>Synthesizes valid strings strictly adhering to regular expression grammar.</td>
+                </tr>
+                <tr>
+                  <td><code>emails()</code></td>
+                  <td>None</td>
+                  <td>Valid RFC 5322 email addresses.</td>
+                </tr>
+                <tr>
+                  <td><code>urls()</code></td>
+                  <td><code>schemes</code></td>
+                  <td>Valid absolute URI strings with paths, query params, and fragments.</td>
+                </tr>
+                <tr>
+                  <td><code>uuids()</code></td>
+                  <td>None</td>
+                  <td>Valid v4 UUID formatted strings (<code>8-4-4-4-12</code>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="gen-collections" class="docs-h3">3. Collections</h3>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Generator</th>
+                  <th>Type</th>
+                  <th>Parameters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>lists(elementGen)</code></td>
+                  <td><code>List&lt;T&gt;</code></td>
+                  <td><code>minSize</code>, <code>maxSize</code>, <code>unique: bool</code></td>
+                </tr>
+                <tr>
+                  <td><code>sets(elementGen)</code></td>
+                  <td><code>Set&lt;T&gt;</code></td>
+                  <td><code>minSize</code>, <code>maxSize</code></td>
+                </tr>
+                <tr>
+                  <td><code>maps(keyGen, valueGen)</code></td>
+                  <td><code>Map&lt;K, V&gt;</code></td>
+                  <td><code>minSize</code>, <code>maxSize</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="gen-combinators" class="docs-h3">4. Combinators & Weighted Sampling</h3>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Combinator</th>
+                  <th>Signature</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>oneOf()</code></td>
+                  <td><code>oneOf([genA, genB])</code></td>
+                  <td>Uniform random selection between multiple generators.</td>
+                </tr>
+                <tr>
+                  <td><code>sampled()</code></td>
+                  <td><code>sampled([v1, v2, v3])</code></td>
+                  <td>Uniform random selection from a fixed literal list.</td>
+                </tr>
+                <tr>
+                  <td><code>sampledWeighted()</code></td>
+                  <td><code>sampledWeighted([(weight, value), ...])</code></td>
+                  <td>Picks a value based on relative integer frequency weights.</td>
+                </tr>
+                <tr>
+                  <td><code>oneOfWeighted()</code></td>
+                  <td><code>oneOfWeighted([(weight, gen), ...])</code></td>
+                  <td>Picks a generator based on relative integer frequency weights.</td>
+                </tr>
+                <tr>
+                  <td><code>frequency()</code></td>
+                  <td><code>frequency([(weight, gen), ...])</code></td>
+                  <td>Alias for weighted generator selection (Hypothesis / QuickCheck convention).</td>
+                </tr>
+                <tr>
+                  <td><code>nullable()</code></td>
+                  <td><code>nullable(gen, {double nullProbability: 0.1})</code></td>
+                  <td>Yields either <code>null</code> or a value drawn from the inner generator.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="gen-temporal-network" class="docs-h3">5. Temporal & Network</h3>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Generator</th>
+                  <th>Output Type</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>dates()</code></td>
+                  <td><code>DateTime</code></td>
+                  <td>Generates UTC date-only timestamps (hours/mins/seconds set to 0).</td>
+                </tr>
+                <tr>
+                  <td><code>dateTimes()</code></td>
+                  <td><code>DateTime</code></td>
+                  <td>Full microsecond-precision timestamps with boundary constraints.</td>
+                </tr>
+                <tr>
+                  <td><code>ipv4Addresses()</code></td>
+                  <td><code>String</code></td>
+                  <td>Valid dotted-decimal IPv4 addresses (<code>0.0.0.0</code> &ndash; <code>255.255.255.255</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>ipv6Addresses()</code></td>
+                  <td><code>String</code></td>
+                  <td>Valid hex-colon IPv6 network addresses.</td>
+                </tr>
+                <tr>
+                  <td><code>bytes()</code></td>
+                  <td><code>Uint8List</code></td>
+                  <td>Raw binary payload buffers with length constraints.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Section 9: Distribution Contracts & Coverage -->
+        <section id="coverage-contracts" class="docs-section">
+          <h2 class="docs-section-title">
+            Distribution Contracts & Coverage
+            <a href="#coverage-contracts" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            A hidden weakness in randomized testing is <strong>test distribution drift</strong>. If your generator accidentally produces empty lists 99% of the time, complex business logic for populated lists never executes.
+          </p>
+
+          <p class="docs-lead">
+            <code>hegeltest</code> solves this with executable <strong>Coverage Contracts</strong>:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="hegelTest('payment routing satisfies SLA distribution contracts', (tc) {
+  // Realistic user demographic simulation
+  final tier = tc.draw(
+    sampledWeighted([
+      (70, 'standard'),
+      (25, 'pro'),
+      (5, 'enterprise'),
+    ]),
+    label: 'tier',
+  );
+
+  final cart = tc.draw(lists(integers(min: 1, max: 500), minSize: 0, maxSize: 50));
+
+  // 1. Classify observations for distribution quality telemetry
+  tc.classify(cart.isEmpty, 'empty cart', label: 'cart_state');
+  tc.classify(cart.length >= 20, 'bulk items', label: 'cart_state');
+
+  // 2. Enforce minimum coverage contracts
+  // If the engine fails to run enterprise tier in at least 2% of iterations, the test FAILS.
+  tc.cover(2.0, tier == 'enterprise', 'enterprise tier exercised');
+  tc.cover(10.0, cart.isEmpty, 'empty cart edge case exercised');
+
+  // Assert SUT logic
+  final invoice = processOrder(tier, cart);
+  expect(invoice.total, greaterThanOrEqualTo(0));
+}, testCases: 300);">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>hegelTest(<span class="text-emerald">'payment routing satisfies SLA distribution contracts'</span>, (tc) {
+  <span class="text-sky">final</span> tier = tc.draw(
+    sampledWeighted([
+      (<span class="text-amber">70</span>, <span class="text-emerald">'standard'</span>),
+      (<span class="text-amber">25</span>, <span class="text-emerald">'pro'</span>),
+      (<span class="text-amber">5</span>, <span class="text-emerald">'enterprise'</span>),
+    ]),
+    label: <span class="text-emerald">'tier'</span>,
+  );
+
+  <span class="text-sky">final</span> cart = tc.draw(lists(integers(min: <span class="text-amber">1</span>, max: <span class="text-amber">500</span>), minSize: <span class="text-amber">0</span>, maxSize: <span class="text-amber">50</span>));
+
+  <span class="text-dim">// 1. Classify observations for distribution quality telemetry</span>
+  tc.classify(cart.isEmpty, <span class="text-emerald">'empty cart'</span>, label: <span class="text-emerald">'cart_state'</span>);
+  tc.classify(cart.length &gt;= <span class="text-amber">20</span>, <span class="text-emerald">'bulk items'</span>, label: <span class="text-emerald">'cart_state'</span>);
+
+  <span class="text-dim">// 2. Enforce minimum coverage contracts</span>
+  tc.cover(<span class="text-amber">2.0</span>, tier == <span class="text-emerald">'enterprise'</span>, <span class="text-emerald">'enterprise tier exercised'</span>);
+  tc.cover(<span class="text-amber">10.0</span>, cart.isEmpty, <span class="text-emerald">'empty cart edge case exercised'</span>);
+
+  <span class="text-sky">final</span> invoice = processOrder(tier, cart);
+  expect(invoice.total, greaterThanOrEqualTo(<span class="text-amber">0</span>));
+}, testCases: <span class="text-amber">300</span>);</code></pre>
+            </div>
+          </div>
+
+          <h3 id="distribution-telemetry" class="docs-h3">Telemetry Output</h3>
+          <p class="docs-lead">
+            When running tests with <code>verbosity: Verbosity.verbose</code> or via the standalone runner, Hegel prints the exact percentage breakdown of every classification and coverage target:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">telemetry</span>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>Collected distribution statistics:
+  cart_state:
+    68.7% normal (1-19 items)
+    19.3% bulk items
+    12.0% empty cart
+  tier:
+    70.3% standard
+    24.7% pro
+     5.0% enterprise [Target: >= 2.0% - PASSED]</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 10: Flutter Testing Deep Dive -->
+        <section id="flutter-unit" class="docs-section">
+          <h2 class="docs-section-title">
+            Flutter Testing Deep Dive
+            <a href="#flutter-unit" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            <code>hegeltest_flutter</code> provides five purpose-built testing harnesses targeting different levels of Flutter application architecture:
+          </p>
+
+          <h3 id="flutter-monkey" class="docs-h3">1. Accessibility Monkey Fuzzing (hegelFlutterMonkeyTest)</h3>
+          <p class="docs-lead">
+            Traverses Flutter's active <code>SemanticsOwner</code> tree, discovers actionable accessibility elements (buttons, inputs, sliders, scrollables), and executes randomized interactive action sequences. When a crash occurs, Hegel shrinks the action sequence to the minimal steps to reproduce:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="hegelFlutterMonkeyTest(
+  'fuzzes checkout workflow without crashing',
+  createWidget: (tc) => const CheckoutApp(),
+  steps: 30,
+  allowedActions: [
+    SemanticsAction.tap,
+    SemanticsAction.setText,
+    SemanticsAction.scrollDown,
+  ],
+  invariant: (tc, tester) async {
+    expect(find.byType(CheckoutApp), findsOneWidget);
+  },
+);">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>hegelFlutterMonkeyTest(
+  <span class="text-emerald">'fuzzes checkout workflow without crashing'</span>,
+  createWidget: (tc) =&gt; <span class="text-sky">const</span> CheckoutApp(),
+  steps: <span class="text-amber">30</span>,
+  allowedActions: [
+    SemanticsAction.tap,
+    SemanticsAction.setText,
+    SemanticsAction.scrollDown,
+  ],
+  invariant: (tc, tester) <span class="text-sky">async</span> {
+    expect(find.byType(CheckoutApp), findsOneWidget);
+  },
+);</code></pre>
+            </div>
+          </div>
+
+          <h3 id="flutter-layout-sweep" class="docs-h3">2. Layout & Screen Size Sweeps (hegelFlutterLayoutSweepTest)</h3>
+          <p class="docs-lead">
+            Sweeps viewport constraints, device pixel ratios, right-to-left localizations, and dynamic user font scaling factors (<code>TextScaler</code>) to detect layout overflows (<code>A RenderFlex overflowed by ... pixels</code>):
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">dart</span>
+              <button class="docs-copy-btn" data-code="hegelFlutterLayoutSweepTest(
+  'user card never overflows across screen sizes and text scales',
+  sweepConfig: const LayoutSweepConfig(
+    minWidth: 320,
+    maxWidth: 1024,
+    minHeight: 480,
+    maxHeight: 1200,
+    minTextScale: 0.8,
+    maxTextScale: 2.5,
+  ),
+  builder: (tc, sample) => const UserProfileCard(),
+);">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code>hegelFlutterLayoutSweepTest(
+  <span class="text-emerald">'user card never overflows across screen sizes and text scales'</span>,
+  sweepConfig: <span class="text-sky">const</span> LayoutSweepConfig(
+    minWidth: <span class="text-amber">320</span>,
+    maxWidth: <span class="text-amber">1024</span>,
+    minHeight: <span class="text-amber">480</span>,
+    maxHeight: <span class="text-amber">1200</span>,
+    minTextScale: <span class="text-amber">0.8</span>,
+    maxTextScale: <span class="text-amber">2.5</span>,
+  ),
+  builder: (tc, sample) =&gt; <span class="text-sky">const</span> UserProfileCard(),
+);</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 11: CI/CD Caching -->
+        <section id="ci-caching" class="docs-section">
+          <h2 class="docs-section-title">
+            CI/CD Caching Recipes
+            <a href="#ci-caching" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Persist the <code>.hegel/</code> regression database across CI runs using GitHub Actions cache. This ensures tests fail immediately on iteration 1 if an old regression reappears:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">yaml</span>
+              <button class="docs-copy-btn" data-code="- name: Cache Hegel counterexamples
+  uses: actions/cache@v4
+  with:
+    path: .hegel/
+    key: hegel-${{ runner.os }}-${{ github.ref_name }}
+    restore-keys: |
+      hegel-${{ runner.os }}-main
+      hegel-${{ runner.os }}-">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code><span class="text-sky">- name:</span> Cache Hegel counterexamples
+  <span class="text-sky">uses:</span> actions/cache@v4
+  <span class="text-sky">with:</span>
+    <span class="text-sky">path:</span> .hegel/
+    <span class="text-sky">key:</span> hegel-${{ runner.os }}-${{ github.ref_name }}
+    <span class="text-sky">restore-keys:</span> |
+      hegel-${{ runner.os }}-main
+      hegel-${{ runner.os }}-</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 12: Config & Flags Reference -->
+        <section id="config-reference" class="docs-section">
+          <h2 class="docs-section-title">
+            Configuration & Environment Flags
+            <a href="#config-reference" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Flag / Variable</th>
+                  <th>Default</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>HEGEL_SEED</code></td>
+                  <td>Unset</td>
+                  <td>Fixes the deterministic PRNG seed for all test cases. Crucial for pinpoint CI bug isolation.</td>
+                </tr>
+                <tr>
+                  <td><code>HEGEL_DATABASE</code></td>
+                  <td><code>1</code> (Enabled)</td>
+                  <td>Set to <code>0</code> or <code>false</code> to disable reading/writing counterexamples to <code>.hegel/</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>HEGEL_LIBHEGEL_PATH</code></td>
+                  <td>Bundled Native</td>
+                  <td>Explicit filesystem override path for custom compiled <code>libhegel_c.dylib</code>, <code>.so</code>, or <code>.dll</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>testCases</code></td>
+                  <td><code>100</code></td>
+                  <td>Number of randomized iterations executed per test run.</td>
+                </tr>
+                <tr>
+                  <td><code>reproduce</code></td>
+                  <td><code>null</code></td>
+                  <td>Hex reproduction blob printed during failure. Paste into test options to immediately replay the minimal failure.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <div class="brand-logo">
+          <span class="brand-name">LetsTestTools<span class="domain-tld">.dev</span></span>
+        </div>
+        <p class="footer-desc">
+          Tools for testing. Built by testing the tools. Next-generation property testing infrastructure for Dart and Flutter.
+        </p>
+        <div class="footer-meta">
+          <span class="status-indicator-live"></span> All Systems Operational · Verified pub.dev Publisher
+        </div>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4 class="footer-col-title">Documentation</h4>
+          <a href="docs.html">Documentation Hub</a>
+          <a href="#quickstart-dart">Quickstart Guides</a>
+          <a href="#gen-primitives">Generator Cheat Sheet</a>
+          <a href="#coverage-contracts">Coverage Contracts</a>
+          <a href="#flutter-unit">Flutter Deep Dive</a>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Packages</h4>
+          <a href="https://pub.dev/packages/hegeltest" target="_blank" rel="noopener">hegeltest (0.9.0)</a>
+          <a href="https://pub.dev/packages/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter (0.9.0)</a>
+          <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener">Publisher Profile</a>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Source Code</h4>
+          <a href="https://github.com/LetsTestTools/hegel-dart" target="_blank" rel="noopener">hegel-dart on GitHub</a>
+          <a href="https://github.com/LetsTestTools/hegeltest_flutter" target="_blank" rel="noopener">hegeltest_flutter on GitHub</a>
+          <a href="https://github.com/LetsTestTools" target="_blank" rel="noopener">LetsTestTools Organization</a>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-col-title">Community</h4>
+          <a href="https://github.com/LetsTestTools/hegel-dart/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing Guide</a>
+          <a href="https://github.com/LetsTestTools/hegel-dart/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noopener">Code of Conduct</a>
+          <a href="mailto:conduct@letstesttools.dev">conduct@letstesttools.dev</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>&copy; 2026 LetsTestTools. Released under the MIT License.</p>
+      <p class="footer-host-badge">Hosted with GitHub Pages · Custom Domain: <code>letstesttools.dev</code></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // Copy buttons in docs code cards
+    document.querySelectorAll('.docs-copy-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-code');
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = btn.innerText;
+          btn.innerText = 'Copied!';
+          btn.style.borderColor = 'var(--emerald)';
+          btn.style.color = 'var(--emerald-light)';
+          setTimeout(() => {
+            btn.innerText = original;
+            btn.style.borderColor = '';
+            btn.style.color = '';
+          }, 2000);
+        } catch (e) {
+          console.error('Clipboard failed', e);
+        }
+      });
+    });
+
+    // Sidebar search filter
+    const searchInput = document.getElementById('docs-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const links = document.querySelectorAll('.docs-nav-link');
+        links.forEach(link => {
+          const text = link.innerText.toLowerCase();
+          const match = text.includes(query);
+          link.parentElement.style.display = match ? 'block' : 'none';
+        });
+
+        // Hide empty groups
+        document.querySelectorAll('.docs-nav-group').forEach(group => {
+          const visibleLinks = group.querySelectorAll('.docs-nav-list li:not([style*="display: none"])');
+          group.style.display = visibleLinks.length > 0 ? 'block' : 'none';
+        });
+      });
+    }
+
+    // Scroll spy for sidebar active state
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          document.querySelectorAll('.docs-nav-link').forEach(link => {
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, { rootMargin: '-80px 0px -70% 0px' });
+
+    document.querySelectorAll('.docs-section').forEach(sec => observer.observe(sec));
+  </script>
+</body>
+</html>
