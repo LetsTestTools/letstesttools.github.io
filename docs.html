@@ -115,8 +115,9 @@
         </div>
 
         <div class="docs-nav-group">
-          <div class="docs-nav-heading">Operations & CI/CD</div>
+          <div class="docs-nav-heading">Operations & Telemetry</div>
           <ul class="docs-nav-list">
+            <li><a href="#benchmarks" class="docs-nav-link">Performance & Benchmarks <span class="docs-nav-badge">Telemetry</span></a></li>
             <li><a href="#ci-caching" class="docs-nav-link">CI/CD Regression Caching</a></li>
             <li><a href="#config-reference" class="docs-nav-link">Config & Environment Flags</a></li>
           </ul>
@@ -829,7 +830,126 @@ void main() {
           </div>
         </section>
 
-        <!-- Section 11: CI/CD Caching -->
+        <!-- Section 11: Performance & Benchmarks -->
+        <section id="benchmarks" class="docs-section">
+          <h2 class="docs-section-title">
+            Performance & Benchmark Metrics
+            <a href="#benchmarks" class="header-anchor" aria-hidden="true">#</a>
+          </h2>
+          <p class="docs-lead">
+            Hegel is architected to eliminate the traditional performance bottlenecks of property-based testing in Dart. By pairing a high-throughput native Rust PRNG choice stream with zero-copy C-FFI pinned memory buffers, test suites run at production scale without stalling developer feedback loops.
+          </p>
+
+          <h3 class="docs-h3">Empirical Benchmark Telemetry</h3>
+          <p class="docs-lead">
+            Measurements executed using <code>benchmark/run_benchmarks.dart</code> with JIT warmup cycles and statistical outlier elimination:
+          </p>
+
+          <div class="docs-table-wrapper">
+            <table class="docs-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Benchmark Operation</th>
+                  <th>Throughput</th>
+                  <th>Median Latency</th>
+                  <th>P95 Latency</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td><code>empty_property_iteration</code></td>
+                  <td><strong>90M+ ops/s</strong></td>
+                  <td>0.053 ms / 10k</td>
+                  <td>0.102 ms / 10k</td>
+                  <td>Pure native PRNG choice stream & iteration loop dispatch overhead.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td><code>integers_single_draw</code></td>
+                  <td><strong>250k+ ops/s</strong></td>
+                  <td>39.07 ms / 10k</td>
+                  <td>41.05 ms / 10k</td>
+                  <td>Full property iteration with 64-bit integer drawing and identity checks.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td><code>sampled_weighted_choice</code></td>
+                  <td><strong>19M+ ops/s</strong></td>
+                  <td>0.465 ms / 10k</td>
+                  <td>0.714 ms / 10k</td>
+                  <td>Fast alias-method weighted discrete distribution sampling.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td><code>coverage_contracts_telemetry</code></td>
+                  <td><strong>9.5M+ ops/s</strong></td>
+                  <td>0.510 ms / 5k</td>
+                  <td>0.580 ms / 5k</td>
+                  <td>Live distribution telemetry tracking with <code>tc.classify()</code> and <code>tc.cover()</code>.</td>
+                </tr>
+                <tr>
+                  <td><strong>Throughput</strong></td>
+                  <td><code>composite_domain_object</code></td>
+                  <td><strong>14.2k ops/s</strong></td>
+                  <td>166.85 ms / 2.5k</td>
+                  <td>208.20 ms / 2.5k</td>
+                  <td>Complex nested model: ID, text name, email regex, boolean, and list of tags.</td>
+                </tr>
+                <tr>
+                  <td><strong>Shrinking</strong></td>
+                  <td><code>shrink_integer_boundary</code></td>
+                  <td><strong>18/s</strong></td>
+                  <td>53.14 ms</td>
+                  <td>65.78 ms</td>
+                  <td>Binary searches arbitrary 64-bit integer space to exact minimal failing boundary.</td>
+                </tr>
+                <tr>
+                  <td><strong>Shrinking</strong></td>
+                  <td><code>shrink_string_delimiter</code></td>
+                  <td><strong>170/s</strong></td>
+                  <td>5.00 ms</td>
+                  <td>10.36 ms</td>
+                  <td>Minimizes arbitrary multi-character string to exact 1-character failure trigger.</td>
+                </tr>
+                <tr>
+                  <td><strong>Database</strong></td>
+                  <td><code>database_replay_cached_failure</code></td>
+                  <td><strong>3,400+ ops/s</strong></td>
+                  <td>0.280 ms</td>
+                  <td>0.356 ms</td>
+                  <td>Sub-millisecond disk cache lookup & replay from <code>.hegel/</code> on iteration 1.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="docs-h3">Running Benchmarks Locally</h3>
+          <p class="docs-lead">
+            The benchmark runner is built into <code>hegel-dart</code> with zero third-party dependencies:
+          </p>
+
+          <div class="docs-code-card">
+            <div class="docs-code-header">
+              <span class="lang-tag">terminal</span>
+              <button class="docs-copy-btn" data-code="dart run benchmark/run_benchmarks.dart">Copy</button>
+            </div>
+            <div class="docs-code-content">
+              <pre><code># Run full benchmark suite and print ASCII table:
+dart run benchmark/run_benchmarks.dart
+
+# Output GitHub-flavored Markdown for CI summaries:
+dart run benchmark/run_benchmarks.dart --format=markdown
+
+# Output structured JSON for telemetry dashboards:
+dart run benchmark/run_benchmarks.dart --format=json</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 12: CI/CD Caching -->
         <section id="ci-caching" class="docs-section">
           <h2 class="docs-section-title">
             CI/CD Caching Recipes

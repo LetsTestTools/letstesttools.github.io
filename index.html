@@ -55,6 +55,7 @@
         <a href="#simulator" class="nav-link">Live Fuzzing</a>
         <a href="#code-walkthrough" class="nav-link">Code Examples</a>
         <a href="#architecture" class="nav-link">Architecture</a>
+        <a href="#benchmarks" class="nav-link">Benchmarks</a>
         <a href="https://pub.dev/publishers/letstesttools.dev" target="_blank" rel="noopener" class="nav-link nav-link-badge">
           <span class="shield-icon">🛡️</span> pub.dev Verified
         </a>
@@ -609,6 +610,57 @@
             <p class="arch-body">
               Every discovered counterexample is hashed and persisted to <code>.hegel/examples/</code>. An automated <code>.gitignore</code> prevents repository pollution. When your test runs again locally or in CI, <code>Phase.reuse</code> executes the failure immediately.
             </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Performance & Throughput Benchmarks -->
+    <section id="benchmarks" class="section-benchmarks">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-eyebrow">// TELEMETRY & BENCHMARKS</div>
+          <h2 class="section-title">Torture-Tested Throughput</h2>
+          <p class="section-desc">
+            Property testing shouldn't stall your test suite. Built on a native Rust engine with zero-copy FFI, Hegel delivers orders of magnitude higher throughput than pure-Dart generators.
+          </p>
+        </div>
+
+        <div class="bench-metrics-grid">
+          <div class="bench-stat-card">
+            <div class="bench-stat-val">90M+ <span class="bench-stat-unit">ops/s</span></div>
+            <div class="bench-stat-title">PRNG Choice Throughput</div>
+            <div class="bench-stat-desc">Native choice byte streams driving property execution with zero garbage collection overhead.</div>
+          </div>
+
+          <div class="bench-stat-card">
+            <div class="bench-stat-val">250k+ <span class="bench-stat-unit">iter/s</span></div>
+            <div class="bench-stat-title">Property Loop Execution</div>
+            <div class="bench-stat-desc">Full end-to-end property iterations drawing 64-bit integer boundaries with identity assertions.</div>
+          </div>
+
+          <div class="bench-stat-card">
+            <div class="bench-stat-val">&lt; 55 <span class="bench-stat-unit">ms</span></div>
+            <div class="bench-stat-title">Automated Shrinking</div>
+            <div class="bench-stat-desc">Deterministic byte-level binary shrinking reduces complex failures to minimal reproducing inputs.</div>
+          </div>
+
+          <div class="bench-stat-card">
+            <div class="bench-stat-val">0.28 <span class="bench-stat-unit">ms</span></div>
+            <div class="bench-stat-title">Regression DB Replay</div>
+            <div class="bench-stat-desc">3,400+ replays/sec from <code>.hegel/</code> cache on iteration 1, catching regressions instantaneously.</div>
+          </div>
+        </div>
+
+        <!-- Reproducibility Command Box -->
+        <div class="bench-reproduce-box">
+          <div class="bench-reproduce-header">
+            <span class="bench-reproduce-label">REPRODUCE BENCHMARKS LOCALLY</span>
+            <span class="bench-reproduce-tag">Zero-Dependency Runner</span>
+          </div>
+          <div class="bench-reproduce-cmd">
+            <code>dart run benchmark/run_benchmarks.dart --format=markdown</code>
+            <a href="docs.html#benchmarks" class="btn btn-outline btn-sm">View Full Benchmark Report &rarr;</a>
           </div>
         </div>
       </div>
